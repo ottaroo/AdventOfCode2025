@@ -11,7 +11,7 @@ public static class Coordinates
     public static Point RightUp => new(1, -1);
     public static Point RightDown => new(1, 1);
     
-    public static Point GetMapPoint(Point source,  Point target) => new Point(source.X - target.X, source.Y - target.Y);
+    public static Point GetMapPoint(Point source,  Point target) => new Point(source.X + target.X, source.Y + target.Y);
 
     public static IEnumerable<Point> Directions
     {
