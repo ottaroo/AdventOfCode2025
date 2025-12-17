@@ -4,8 +4,8 @@ class Program
 {
     static void Main(string[] args)
     {
-        var path = Path.GetFullPath(".\\TestData.txt");
-        // var path = Path.GetFullPath(".\\PuzzleData.txt");
+        // var path = Path.GetFullPath(".\\TestData.txt");
+        var path = Path.GetFullPath(".\\PuzzleData.txt");
         
         var tiles = new List<MapPoint>();
         
@@ -26,7 +26,7 @@ class Program
         Console.WriteLine($"9a) Largest area is: {area} [{a.X},{a.Y} - {b.X},{b.Y}]");
 
         theather.GetLargestArea2(out a, out b, out area);
-        Console.WriteLine($"9b) Largest area is: {area} [{a.X},{a.Y} - {b.X},{b.Y}] (To low: 167584794)");
+        Console.WriteLine($"9b) Largest area is: {area} [{a.X},{a.Y} - {b.X},{b.Y}] (To low: 167584794, 167704056 to high: 4667093750, this is not it: 1369920618)");
         
 
 
