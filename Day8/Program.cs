@@ -1,13 +1,16 @@
-﻿namespace Day8;
+﻿using System;
+using System.IO;
+using System.Linq;
+
+namespace Day8;
 
 class Program
 {
     static void Main(string[] args)
     {
-        var path = Path.GetFullPath(".\\TestData.txt");
-        // var path = Path.GetFullPath(".\\PuzzleData.txt");
+        // var path = Path.GetFullPath(".\\TestData.txt");
+        var path = Path.GetFullPath(".\\PuzzleData.txt");
 
-        //TODO:  disorganizer - get back to this later
         var junctionBoxOrganizer = new JunctionBoxOrganizer();
         
         using var stream = File.OpenRead(path);
@@ -21,7 +24,19 @@ class Program
             junctionBoxOrganizer.AddJunctionBox(data[0], data[1], data[2]);
         }
         
-        junctionBoxOrganizer.Connect();
+        junctionBoxOrganizer.Connect(1000);
+        var largestCircuit = junctionBoxOrganizer.Circuits.OrderByDescending(x => x.Boxes.Count).Take(3);
+        var sum = 1L;
+        foreach(var circuit in largestCircuit)
+        {
+            sum *= circuit.Boxes.Count;
+        }
+        Console.WriteLine($"8a) Largest circuits multiplied: {sum}");
         
+        junctionBoxOrganizer.Connect(0); // 0 - all
+        var sudoDistance = (long)junctionBoxOrganizer.LastConnectedJunctionBoxes.Boxes.First().Location.X * (long)junctionBoxOrganizer.LastConnectedJunctionBoxes.Boxes.Last().Location.X;
+        Console.WriteLine($"8b) Sudo distance of last two junction boxes: {sudoDistance}");
+        
+
     }
 }
