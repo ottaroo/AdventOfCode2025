@@ -29,8 +29,6 @@ class Program
         
         var sumJolts = 0L;
         
-        // sumJolts = (long) machines[0].FindBestJoltageCombinations(out var combo);
-        
         Parallel.ForEach(machines, machine =>
             {
                 var n = (long) machine.FindBestJoltageCombinations(out _);
@@ -38,11 +36,6 @@ class Program
             }
         );
         Console.WriteLine($"10b) Number of buttons pushed: {sumJolts}");
-
-        // foreach (var machine in machines)
-        //     Console.WriteLine("Jolts: [" + string.Join(",", machine.Jolts) + $"] GCD: {machine.GcdOfSet(machine.Jolts)}");
-
-
 
     }
 }
