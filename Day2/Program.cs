@@ -12,7 +12,7 @@ class Program
             Console.WriteLine("Nothing found");
             return;
         }
-        
+
         var catalog = ProductCatalog.Parse(line);
         var sum = catalog.GetSumOfInvalidProductRanges2A();
         Console.WriteLine($"2a) Sum of valid products: {sum}");

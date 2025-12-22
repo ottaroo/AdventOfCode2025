@@ -9,11 +9,9 @@ class Program
         var math = new MathHomework();
         math.Parse(path);
         Console.WriteLine($"6a) First answer is: {math.Calculations.Sum()}");
-        
+
         var math2 = new MathHomework();
         math2.ParseVertical(path);
         Console.WriteLine($"6b) Second answer is: {math2.Calculations.Sum()}");
-        
-        
     }
 }

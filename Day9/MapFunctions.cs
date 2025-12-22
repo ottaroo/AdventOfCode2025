@@ -4,6 +4,7 @@ using System.Text;
 namespace Day9;
 
 public record struct MapPoint(int X, int Y);
+
 public record struct Line(MapPoint Start, MapPoint End);
 
 public static class MapPointExtensions
@@ -19,19 +20,18 @@ public static class MapPointExtensions
         {
             return p.X == target.X && p.Y == target.Y;
         }
+
         public bool IsNot(MapPoint target)
         {
             return p.X != target.X || p.Y != target.Y;
         }
     }
-} 
+}
 
-public enum Direction 
+public enum Direction
 {
     Up,
     Down,
     Left,
     Right
 }
-
-

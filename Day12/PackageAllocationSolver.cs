@@ -4,13 +4,13 @@ using Day12;
 
 public sealed class PackageAllocationSolver
 {
-    private readonly int _boardW;
     private readonly int _boardH;
-    private readonly List<Shape> _pieces;
-    private readonly Dictionary<string, List<bool[,]>> _shapeOrientations;
+    private readonly int _boardW;
+    private readonly List<Placement> _currentSolution;
 
     private readonly BitArray _occupied; // board cells used
-    private readonly List<Placement> _currentSolution;
+    private readonly List<Shape> _pieces;
+    private readonly Dictionary<string, List<bool[,]>> _shapeOrientations;
 
     public PackageAllocationSolver(int boardW, int boardH, List<Shape> pieces)
     {
@@ -23,42 +23,24 @@ public sealed class PackageAllocationSolver
 
         // Cache orientations per shape
         _shapeOrientations = new Dictionary<string, List<bool[,]>>();
-        foreach (var piece in pieces.Where(p=>p.Id.EndsWith("_0")))
+        foreach (var piece in pieces.Where(p => p.Id.EndsWith("_0")))
             _shapeOrientations[piece.ShapeId] = ShapeTransform.GenerateOrientations(piece.Data);
+    }
+
+    private bool CanPlace(Placement placement)
+    {
+        foreach (var idx in placement.CoveredCells)
+        {
+            if (_occupied[idx]) return false;
+        }
+
+        return true;
     }
 
     public IReadOnlyList<Placement>? FindOneSolution()
     {
         var remaining = _pieces.ToList();
         return Search(remaining) ? _currentSolution.AsReadOnly() : null;
-    }
-
-    private bool Search(List<Shape> remainingPieces)
-    {
-        if (remainingPieces.Count == 0)
-            return true; // all pieces placed
-
-        // Heuristic: choose next piece (could sort by shape complexity)
-        var piece = remainingPieces[0];
-        remainingPieces.RemoveAt(0);
-
-        foreach (var placement in GeneratePlacementsForPiece(piece))
-        {
-            if (!CanPlace(placement))
-                continue;
-
-            Place(placement);
-            _currentSolution.Add(placement);
-
-            if (Search(remainingPieces))
-                return true;
-
-            _currentSolution.RemoveAt(_currentSolution.Count - 1);
-            Unplace(placement);
-        }
-
-        remainingPieces.Insert(0, piece);
-        return false;
     }
 
     private IEnumerable<Placement> GeneratePlacementsForPiece(Shape piece)
@@ -98,19 +80,38 @@ public sealed class PackageAllocationSolver
         }
     }
 
-    private bool CanPlace(Placement placement)
-    {
-        foreach (var idx in placement.CoveredCells)
-        {
-            if (_occupied[idx]) return false;
-        }
-        return true;
-    }
-
     private void Place(Placement placement)
     {
         foreach (var idx in placement.CoveredCells)
             _occupied[idx] = true;
+    }
+
+    private bool Search(List<Shape> remainingPieces)
+    {
+        if (remainingPieces.Count == 0)
+            return true; // all pieces placed
+
+        // Heuristic: choose next piece (could sort by shape complexity)
+        var piece = remainingPieces[0];
+        remainingPieces.RemoveAt(0);
+
+        foreach (var placement in GeneratePlacementsForPiece(piece))
+        {
+            if (!CanPlace(placement))
+                continue;
+
+            Place(placement);
+            _currentSolution.Add(placement);
+
+            if (Search(remainingPieces))
+                return true;
+
+            _currentSolution.RemoveAt(_currentSolution.Count - 1);
+            Unplace(placement);
+        }
+
+        remainingPieces.Insert(0, piece);
+        return false;
     }
 
     private void Unplace(Placement placement)

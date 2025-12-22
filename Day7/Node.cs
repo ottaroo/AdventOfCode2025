@@ -6,24 +6,11 @@ namespace Day7;
 
 public class Node() : IEquatable<Node>
 {
+    private long? _cachedPathCount = null;
     public Node? ParentNode { get; set; }
-    
+
     public Point Point { get; private init; }
 
-   
-    private long? _cachedPathCount = null;
-
-    private void ResetCachedPathCount()
-    {
-        var current = this;
-        while (current != null)
-        {
-            _cachedPathCount = null;
-            current = current.ParentNode;
-        }
-
-    }
-    
     public long PathCount
     {
         get
@@ -47,17 +34,6 @@ public class Node() : IEquatable<Node>
         }
     }
 
-    public static Node Create(int x, int y, Node? parentNode)
-    {
-        var node = new Node()
-        {
-            Point = new Point(x, y)
-        };
-        node.ParentNode = parentNode;
-
-        return node;
-    }
-
     public Node? Left
     {
         get;
@@ -78,6 +54,17 @@ public class Node() : IEquatable<Node>
         }
     }
 
+    public static Node Create(int x, int y, Node? parentNode)
+    {
+        var node = new Node()
+        {
+            Point = new Point(x, y)
+        };
+        node.ParentNode = parentNode;
+
+        return node;
+    }
+
 
     public bool Equals(Node? other)
     {
@@ -96,5 +83,14 @@ public class Node() : IEquatable<Node>
     {
         return Point.GetHashCode();
     }
-    
+
+    private void ResetCachedPathCount()
+    {
+        var current = this;
+        while (current != null)
+        {
+            _cachedPathCount = null;
+            current = current.ParentNode;
+        }
+    }
 }

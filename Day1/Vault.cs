@@ -2,11 +2,7 @@
 
 public class Vault
 {
-    public int Code
-    {
-        get;
-        private protected set;
-    }
+    public int Code { get; private protected set; }
 
     public int CurrentPosition
     {
@@ -24,16 +20,29 @@ public class Vault
         }
     } = 50;
 
-    public void Reset() =>  CurrentPosition = 50;
-
-    public virtual void MoveRight(int right)
-    {
-        CurrentPosition += (right % 100);   
-    }
-
     public virtual void MoveLeft(int left)
     {
         CurrentPosition -= (left % 100);
+    }
+
+    public virtual void MoveRight(int right)
+    {
+        CurrentPosition += (right % 100);
+    }
+
+    public void Parse(string? line)
+    {
+        if (line == null)
+            return;
+
+        var entries = line.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        foreach (var entry in entries)
+        {
+            if (entry[0] == 'L')
+                MoveLeft(int.Parse(entry.Substring(1)));
+            else if (entry[0] == 'R')
+                MoveRight(int.Parse(entry.Substring(1)));
+        }
     }
 
     public void ParseFile(string file)
@@ -45,40 +54,12 @@ public class Vault
         while (!reader.EndOfStream)
             Parse(reader.ReadLine());
     }
-    
-    public void Parse(string? line)
-    {
-        if (line == null)
-            return;
-        
-        var entries = line.Split(',', StringSplitOptions.RemoveEmptyEntries |  StringSplitOptions.TrimEntries);
-        foreach (var entry in entries)
-        {
-            if (entry[0] == 'L')
-                MoveLeft(int.Parse(entry.Substring(1)));
-            else if (entry[0] == 'R')
-                MoveRight(int.Parse(entry.Substring(1)));
-        }
-    }
-    
+
+    public void Reset() => CurrentPosition = 50;
 }
 
 public class SecureVault : Vault
 {
-    public override void MoveRight(int right)
-    {
-        if (right < 100 && CurrentPosition + right > 100)
-            Code++;
-        if (right > 100)
-        {
-            var rotations = right / 100;
-            Code += rotations;
-            MoveRight(right % 100);
-            return;
-        }
-        base.MoveRight(right);
-    }
-
     public override void MoveLeft(int left)
     {
         if (CurrentPosition != 0 && left < 100 && CurrentPosition - left < 0)
@@ -90,7 +71,22 @@ public class SecureVault : Vault
             MoveLeft(left % 100);
             return;
         }
+
         base.MoveLeft(left);
     }
-}
 
+    public override void MoveRight(int right)
+    {
+        if (right < 100 && CurrentPosition + right > 100)
+            Code++;
+        if (right > 100)
+        {
+            var rotations = right / 100;
+            Code += rotations;
+            MoveRight(right % 100);
+            return;
+        }
+
+        base.MoveRight(right);
+    }
+}

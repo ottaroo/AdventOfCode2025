@@ -9,6 +9,6 @@ public class Circuit
         foreach (var box in boxes)
             Boxes.Add(box);
     }
-    
+
     public HashSet<JunctionBox> Boxes { get; } = [];
 }

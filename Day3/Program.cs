@@ -12,8 +12,5 @@ class Program
         var megaBattiers = new MegaBatteries();
         var megaSum = await megaBattiers.GetJoltage(path);
         Console.WriteLine($"3b) answer: {megaSum}");
-        
-        
-        
     }
 }

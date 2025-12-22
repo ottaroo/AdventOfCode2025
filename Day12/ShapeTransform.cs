@@ -2,6 +2,20 @@
 
 public static class ShapeTransform
 {
+    private static bool[,] FlipHorizontal(bool[,] src)
+    {
+        int h = src.GetLength(0);
+        int w = src.GetLength(1);
+
+        bool[,] dst = new bool[h, w];
+
+        for (int y = 0; y < h; y++)
+        for (int x = 0; x < w; x++)
+            dst[y, w - x - 1] = src[y, x];
+
+        return dst;
+    }
+
     public static List<bool[,]> GenerateOrientations(bool[,] shape)
     {
         var result = new List<bool[,]>();
@@ -43,20 +57,6 @@ public static class ShapeTransform
         for (int y = 0; y < h; y++)
         for (int x = 0; x < w; x++)
             dst[x, h - y - 1] = src[y, x];
-
-        return dst;
-    }
-
-    private static bool[,] FlipHorizontal(bool[,] src)
-    {
-        int h = src.GetLength(0);
-        int w = src.GetLength(1);
-
-        bool[,] dst = new bool[h, w];
-
-        for (int y = 0; y < h; y++)
-        for (int x = 0; x < w; x++)
-            dst[y, w - x - 1] = src[y, x];
 
         return dst;
     }

@@ -8,9 +8,9 @@ public class BoolArrayComparer : IEqualityComparer<bool[,]>
             return true;
         if (a == null || b == null)
             return false;
-        if (ReferenceEquals(a,b))
+        if (ReferenceEquals(a, b))
             return true;
-        
+
         if (a.GetLength(0) != b.GetLength(0) ||
             a.GetLength(1) != b.GetLength(1))
             return false;

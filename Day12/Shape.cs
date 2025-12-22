@@ -4,14 +4,15 @@ public class Shape
 {
     private int _copy = 0;
     private bool _isCopy = false;
+
     public Shape(string id, string shapeId, char[][] shape)
     {
         Id = id;
         ShapeId = shapeId;
         Data = new bool[shape.Length, shape[0].Length];
-        for(var y = 0; y < shape[0].Length; y++)
-            for(var x = 0; x < shape[0].Length; x++)
-                Data[y, x] = shape[y][x] == '#';
+        for (var y = 0; y < shape[0].Length; y++)
+        for (var x = 0; x < shape[0].Length; x++)
+            Data[y, x] = shape[y][x] == '#';
     }
 
     public Shape(string id, string shapeId, bool[,] data)
@@ -20,21 +21,22 @@ public class Shape
         ShapeId = shapeId;
         Data = data;
     }
-    
-    public string Id { get;  }
-    public string ShapeId { get;  }
-    
-    public bool[,] Data { get;}
+
+    public string Id { get; }
+    public string ShapeId { get; }
+
+    public bool[,] Data { get; }
 
     public void ClearCopyCounter()
     {
         _copy = 0;
     }
+
     public Shape Copy()
     {
         var shape = new Shape($"{Id}_{_copy}", ShapeId, Data)
         {
-            _isCopy =  true
+            _isCopy = true
         };
         _copy++;
         return shape;
@@ -44,7 +46,7 @@ public class Shape
     {
         return $"{Id}";
     }
-    
+
     // private readonly Vector2[] _originalShape;
     // private Vector2[] _testShape;
     // private readonly char[][] _originalShapeChars;
@@ -202,7 +204,6 @@ public class Shape
     //         for(var x =  0; x <  map[y].Length; x++)
     //             Console.WriteLine(map[y][x]);
     // }
-    
 }
 
 // public static class ShapeExtensions

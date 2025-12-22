@@ -8,7 +8,7 @@ class Program
         var vault = new Vault();
         vault.ParseFile(path);
         Console.WriteLine("Code for 1a is: " + vault.Code);
-        
+
         vault = new SecureVault();
         vault.ParseFile(path);
         Console.WriteLine("Code for 1b is: " + vault.Code);

@@ -1,15 +1,12 @@
 ﻿namespace Day4;
 
-
-
 public class Forklift
 {
     public const char PaperRoll = '@';
     public const char EmptySpace = '.';
-    
+
     public Point[] FindAvailableRollsOfPaper(char[][] input, int maxNumberOfAdjacentPaperRolls = 3)
     {
-        
         var points = new List<Point>();
         for (var y = 0; y < input.Length; y++)
         {
@@ -17,7 +14,7 @@ public class Forklift
             {
                 if (input[y][x] != PaperRoll)
                     continue;
-                var current =  new Point(x, y);
+                var current = new Point(x, y);
                 var adjacent = 0;
                 foreach (var dir in Coordinates.Directions)
                 {
@@ -27,17 +24,18 @@ public class Forklift
                     if (input[mapPoint.Y][mapPoint.X] == PaperRoll)
                         adjacent++;
                 }
+
                 if (adjacent <= maxNumberOfAdjacentPaperRolls)
                     points.Add(current);
             }
-
         }
+
         return points.ToArray();
     }
 
     public void MoveRollsOfPaper(ref char[][] input, Point[] points)
     {
-        foreach(var point in points)
+        foreach (var point in points)
             input[point.Y][point.X] = EmptySpace;
     }
 }

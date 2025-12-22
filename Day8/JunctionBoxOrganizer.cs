@@ -16,7 +16,6 @@ public class JunctionBoxOrganizer
     }
 
     public void AddJunctionBox(int x, int y, int z) => AddJunctionBox(new JunctionBox(new Vector3(x, y, z)));
-    
 
 
     public void Connect(int numberOfShortestPaths = 10)
@@ -24,7 +23,7 @@ public class JunctionBoxOrganizer
         Circuits.Clear();
         // Shortest distance
         var allTheShortestPath = new List<ShortestPath>();
-        
+
         for (var i = 0; i < Boxes.Count - 1; i++)
         {
             for (var j = i + 1; j < Boxes.Count; j++)
@@ -32,11 +31,11 @@ public class JunctionBoxOrganizer
                 allTheShortestPath.Add(new ShortestPath(Boxes[i], Boxes[j], Vector3.DistanceSquared(Boxes[i].Location, Boxes[j].Location)));
             }
         }
-        
-        foreach(var path in allTheShortestPath.OrderBy(x => x.Distance).Take(numberOfShortestPaths > 0 ? numberOfShortestPaths : allTheShortestPath.Count))
+
+        foreach (var path in allTheShortestPath.OrderBy(x => x.Distance).Take(numberOfShortestPaths > 0 ? numberOfShortestPaths : allTheShortestPath.Count))
         {
-            var existingA = Circuits.FirstOrDefault(x=>x.Boxes.Contains(path.A));
-            var existingB = Circuits.FirstOrDefault(x=> x.Boxes.Contains(path.B));
+            var existingA = Circuits.FirstOrDefault(x => x.Boxes.Contains(path.A));
+            var existingB = Circuits.FirstOrDefault(x => x.Boxes.Contains(path.B));
             if (existingA != null && existingB != null)
             {
                 if (ReferenceEquals(existingA, existingB))
@@ -54,6 +53,7 @@ public class JunctionBoxOrganizer
 
                 continue;
             }
+
             if (existingA != null)
             {
                 existingA.Boxes.Add(path.B);
@@ -77,6 +77,7 @@ public class JunctionBoxOrganizer
 
                 continue;
             }
+
             Circuits.Add(new Circuit(path.A, path.B));
         }
     }

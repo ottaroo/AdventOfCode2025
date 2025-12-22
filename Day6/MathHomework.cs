@@ -6,14 +6,14 @@ public class MathHomework
 {
     public string[] Operators { get; private set; } = [];
     public double[] Calculations { get; private set; } = Array.Empty<double>();
-    
+
     public void Parse(string path)
     {
         using var reader = new FileStream(path, FileMode.Open, FileAccess.Read);
         reader.Seek(-1, SeekOrigin.End);
-        
-        Operators = reader.ReadLineInReverse().Split(' ',  StringSplitOptions.RemoveEmptyEntries| StringSplitOptions.TrimEntries);
-        
+
+        Operators = reader.ReadLineInReverse().Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
         reader.Seek(0, SeekOrigin.Begin);
         using var sr = new StreamReader(reader);
         while (!sr.EndOfStream)
@@ -21,7 +21,7 @@ public class MathHomework
             var line = sr.ReadLine();
             if (string.IsNullOrWhiteSpace(line))
                 continue;
-            var data = line.Split(' ', StringSplitOptions.RemoveEmptyEntries| StringSplitOptions.TrimEntries);
+            var data = line.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             if (!long.TryParse(data[0], out var result))
                 break;
             if (!Calculations.Any())
@@ -29,6 +29,7 @@ public class MathHomework
                 Calculations = data.Select(x => (double) long.Parse(x)).ToArray(); // initial values
                 continue;
             }
+
             for (var i = 0; i < data.Length; i++)
             {
                 switch (Operators[i])
@@ -47,20 +48,18 @@ public class MathHomework
                         break;
                 }
             }
-            
-
         }
     }
 
     public void ParseVertical(string path)
     {
         using var reader = new FileStream(path, FileMode.Open, FileAccess.Read);
-        var lines =  File.ReadAllLines(path);
+        var lines = File.ReadAllLines(path);
         Operators = lines[^1].Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         lines = lines[..^1];
-        var map = lines.Select(x=>x.ToCharArray()).ToArray();
-        
-        Calculations = Operators.Select(x=>double.NaN).ToArray();
+        var map = lines.Select(x => x.ToCharArray()).ToArray();
+
+        Calculations = Operators.Select(x => double.NaN).ToArray();
 
         var n = 0;
         for (var x = 0; x < lines.Max(l => l.Length); x++)
@@ -68,7 +67,7 @@ public class MathHomework
             var sb = new StringBuilder();
             for (var y = 0; y < map.Length; y++)
             {
-                if (map[y][x] != ' ') 
+                if (map[y][x] != ' ')
                     sb.Append(map[y][x]);
             }
 
@@ -77,6 +76,7 @@ public class MathHomework
                 n++;
                 continue;
             }
+
             if (Double.IsNaN(Calculations[n]))
                 Calculations[n] = long.Parse(sb.ToString());
             else
@@ -98,15 +98,13 @@ public class MathHomework
                         break;
                 }
             }
-            
         }
-
     }
 }
 
 public static class MathExtensions
 {
-    extension (FileStream fileStream)
+    extension(FileStream fileStream)
     {
         // messy - mostly to test new extensions
         public string ReadLineInReverse()
@@ -130,7 +128,7 @@ public static class MathExtensions
                     break;
                 }
 
-                var index = lastKnownEndPosition < buffer.Length ? buffer[..(int)lastKnownEndPosition].LastIndexOf((byte)'\n') :  buffer.LastIndexOf((byte) '\n');
+                var index = lastKnownEndPosition < buffer.Length ? buffer[..(int) lastKnownEndPosition].LastIndexOf((byte) '\n') : buffer.LastIndexOf((byte) '\n');
                 if (index < bytesRead)
                 {
                     var tmpBeginPosition = fileStream.Position - bytesRead + index;
@@ -146,14 +144,14 @@ public static class MathExtensions
                     }
 
                     fileStream.Seek(tmpBeginPosition, SeekOrigin.Begin);
-                    var tmpRead = fileStream.Read(tmp, 0, (int)Math.Min(tmp.Length, lastKnownEndPosition - tmpBeginPosition));
+                    var tmpRead = fileStream.Read(tmp, 0, (int) Math.Min(tmp.Length, lastKnownEndPosition - tmpBeginPosition));
                     var str = Encoding.UTF8.GetString(tmp, 0, tmpRead);
                     fileStream.Seek(tmpBeginPosition, SeekOrigin.Begin);
                     return str.Trim();
                 }
             }
+
             return string.Empty;
         }
-
     }
 }

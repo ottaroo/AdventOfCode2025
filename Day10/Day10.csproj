@@ -8,12 +8,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Update="PuzzleData.txt">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="TestData.txt">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <None Update="PuzzleData.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Google.OrTools" Version="9.14.6206" />
     </ItemGroup>
 
 </Project>

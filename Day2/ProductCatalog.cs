@@ -9,26 +9,13 @@ public class ProductCatalog
 {
     public ProductRange[] Ranges { get; private set; } = [];
 
-    public static ProductCatalog Parse(string line)
-    {
-        var lines = line.Split(",", StringSplitOptions.RemoveEmptyEntries|StringSplitOptions.TrimEntries).Select(x=>
-        {
-            var parts = x.Split("-", StringSplitOptions.RemoveEmptyEntries|StringSplitOptions.TrimEntries);
-            return new ProductRange(parts[0], parts[1]);
-        }).ToArray();
-        return new ProductCatalog()
-        {
-            Ranges = lines
-        };
-    }
-
     private (string Left, string Right) GetLeftAndRight(string line) => (line.Substring(0, line.Length / 2), line.Substring(line.Length / 2));
 
 
     public long GetSumOfInvalidProductRanges2A()
     {
         var sum = 0L;
-        
+
         // lets just brute force it
         foreach (var range in Ranges)
         {
@@ -38,20 +25,18 @@ public class ProductCatalog
             var patternMaxString = GetLeftAndRight($"{maxValue}");
             var patternMin = long.Parse(patternMinString.Left);
             var patternMax = long.Parse(patternMaxString.Left);
-            
+
             for (var n = patternMin; n <= patternMax; n++)
             {
                 var pattern = long.Parse($"{n}{n}");
-                if (pattern >= minValue  && pattern <= maxValue)
+                if (pattern >= minValue && pattern <= maxValue)
                     sum += pattern;
             }
-            
         }
 
         return sum;
-
     }
-    
+
     public long GetSumOfInvalidProductRanges2B()
     {
         var sum = 0L;
@@ -67,7 +52,7 @@ public class ProductCatalog
             var patternMax = long.Parse(patternMaxString.Left);
 
             var added = new HashSet<long>();
-            
+
             for (var n = patternMin; n <= patternMax; n++)
             {
                 var pattern = long.Parse($"{n}{n}");
@@ -77,8 +62,7 @@ public class ProductCatalog
                     added.Add(pattern);
                 }
             }
-            
-            
+
 
             // upping the game... all values not divisible by 2 could be identical numbers and be invalid
             // still brut forcing a bit
@@ -103,36 +87,44 @@ public class ProductCatalog
                 }
 
                 var groupings = (int) (l / 2);
-                if (groupings >= 2) {
-                    for (var g = 2; g <= groupings; g++  )
+                if (groupings >= 2)
+                {
+                    for (var g = 2; g <= groupings; g++)
                     {
-                        var groupMax = "9".PadRight(g,'9');
+                        var groupMax = "9".PadRight(g, '9');
                         for (var x = 10; x < int.Parse(groupMax); x++)
                         {
                             var sb = new StringBuilder();
-                            while(sb.Length < l)
+                            while (sb.Length < l)
                             {
                                 sb.Append($"{x}");
                             }
-                            var value =  long.Parse(sb.ToString());
+
+                            var value = long.Parse(sb.ToString());
                             if (value >= minValue && value <= maxValue && !added.Contains(value))
                             {
                                 sum += value;
                                 added.Add(value);
                             }
                         }
-                        
                     }
-
                 }
-                
             }
-
-
-
         }
 
         return sum;
+    }
 
+    public static ProductCatalog Parse(string line)
+    {
+        var lines = line.Split(",", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(x =>
+        {
+            var parts = x.Split("-", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            return new ProductRange(parts[0], parts[1]);
+        }).ToArray();
+        return new ProductCatalog()
+        {
+            Ranges = lines
+        };
     }
 }

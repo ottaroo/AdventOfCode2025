@@ -6,24 +6,14 @@ namespace Day11;
 
 public class Node() : IEquatable<Node>
 {
+    private readonly List<Node> _children = [];
+
+
+    private long? _cachedPathCount = null;
     public Node? ParentNode { get; set; }
-    
+
     public string Name { get; private init; }
 
-   
-    private long? _cachedPathCount = null;
-
-    private void ResetCachedPathCount()
-    {
-        var current = this;
-        while (current != null)
-        {
-            _cachedPathCount = null;
-            current = current.ParentNode;
-        }
-
-    }
-    
     public long PathCount
     {
         get
@@ -38,7 +28,7 @@ public class Node() : IEquatable<Node>
             else
             {
                 var total = 0L;
-                foreach(var child in _children)
+                foreach (var child in _children)
                     total += child.PathCount;
                 _cachedPathCount = total;
             }
@@ -47,20 +37,8 @@ public class Node() : IEquatable<Node>
         }
     }
 
-    public static Node Create(string name, Node? parentNode = null)
-    {
-        
-        var node = new Node
-        {
-            Name = name,
-            ParentNode = parentNode
-        };
+    public IReadOnlyList<Node> Children => _children;
 
-        return node;
-    }
-
-    private readonly List<Node> _children = [];
-    
     public void AddChild(Node child)
     {
         if (_children.Contains(child))
@@ -74,8 +52,17 @@ public class Node() : IEquatable<Node>
         child.ParentNode = this;
         // ResetCachedPathCount();
     }
-    
-    public IReadOnlyList<Node> Children => _children;
+
+    public static Node Create(string name, Node? parentNode = null)
+    {
+        var node = new Node
+        {
+            Name = name,
+            ParentNode = parentNode
+        };
+
+        return node;
+    }
 
 
     public bool Equals(Node? other)
@@ -95,5 +82,14 @@ public class Node() : IEquatable<Node>
     {
         return Name.GetHashCode();
     }
-    
+
+    private void ResetCachedPathCount()
+    {
+        var current = this;
+        while (current != null)
+        {
+            _cachedPathCount = null;
+            current = current.ParentNode;
+        }
+    }
 }

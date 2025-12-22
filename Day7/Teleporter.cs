@@ -13,44 +13,19 @@ public class Teleporter
     public const char EmptySpace = '.';
     public const char Splitter = '^';
     public const char Beam = '|';
-    
-    private Teleporter() { }
+    private string _path;
 
     private char[][] _schema;
-    private string _path;
-    private Queue<Point> Beams { get; set; } = new();
 
     public Point[] TachyonStart = [];
-    
-    public static Teleporter Create(string path)
+
+    private Teleporter()
     {
-        var teleport = new Teleporter()
-        {
-            _path = path
-        };
-        teleport.Reset();        
-        
-        return teleport;
     }
 
-    private void Reset()
-    {
-        _schema = File.ReadAllLines(_path).Select(x => x.ToArray()).ToArray();
-        var startPoints =new List<Point>();
-        for (var y = 0; y < _schema.Length; y++)
-        for (var x = 0; x < _schema[y].Length; x++)
-        {
-            if (_schema[y][x] == Start) 
-            {
-                startPoints.Add(new Point(x, y));
-            }
-        }
-        
-        TachyonStart = startPoints.ToArray();
-    }
-    
-    
-    
+    private Queue<Point> Beams { get; set; } = new();
+
+
     public int CalculateBeamSplits()
     {
         Reset();
@@ -64,72 +39,22 @@ public class Teleporter
         return splits;
     }
 
-    private void SetMapChar(Point point, char c) => _schema[point.Y][point.X] = c;
-
-    private bool IsValidPoint(Point point)
+    public static Teleporter Create(string path)
     {
-        if (point.Y < 0 || point.Y >= _schema.Length)
-            return false;
-        if (point.X < 0 || point.X >= _schema[point.Y].Length)
-            return false;
-        return true;
-    }
-    
-    private bool IsSplitter(Point point) => IsValidPoint(point) && _schema[point.Y][point.X] == Splitter;
-    private bool IsEmptySpace(Point point) => IsValidPoint(point) &&  _schema[point.Y][point.X] == EmptySpace;
-    
-    private int MoveTachyon(Point point)
-    {
-        var beamCount = 0;
-        
-        if (!IsBeam(point))
-            return beamCount;
-
-        var current = point;
-        
-        while (true)
+        var teleport = new Teleporter()
         {
-            current = Coordinates.GetMapPoint(current, Coordinates.Direction.Down);
-            if (!IsEmptySpace(current))
-                break;
+            _path = path
+        };
+        teleport.Reset();
 
-            
-            
-            SetMapChar(current, Beam);
-        }
-
-        if (IsSplitter(current))
-        {
-            var left =  Coordinates.GetMapPoint(current, Coordinates.Direction.Left);
-            var right =  Coordinates.GetMapPoint(current, Coordinates.Direction.Right);
-            var above =  Coordinates.GetMapPoint(current, Coordinates.Direction.Up);
-            if (IsEmptySpace(left))
-            {
-                SetMapChar(left, Beam);
-                Beams.Enqueue(left);
-            }
-            
-            if (IsEmptySpace(right))
-            {
-                SetMapChar(right, Beam);
-                Beams.Enqueue(right);
-            }
-
-            if (IsBeam(above))
-                beamCount++;
-        }
-        
-        return beamCount; 
+        return teleport;
     }
 
 
-    
-
-  
     public long FindTimeLines()
     {
         _ = CalculateBeamSplits();
-        
+
         var firstSplitterX = _schema[0].IndexOf(Start);
         var firstSplitterY = 0;
         for (var y = 0; y < _schema.Length; y++)
@@ -141,9 +66,9 @@ public class Teleporter
             }
         }
 
-        var root = Node.Create(firstSplitterX, firstSplitterY-1, null);
-        var left = Node.Create(firstSplitterX-1, firstSplitterY, root);
-        var right = Node.Create(firstSplitterX+1, firstSplitterY, root);
+        var root = Node.Create(firstSplitterX, firstSplitterY - 1, null);
+        var left = Node.Create(firstSplitterX - 1, firstSplitterY, root);
+        var right = Node.Create(firstSplitterX + 1, firstSplitterY, root);
         root.Left = left;
         root.Right = right;
         var xpoints = new Dictionary<int, List<Node>>();
@@ -173,12 +98,12 @@ public class Teleporter
                         if (ReferenceEquals(parent.Right, node))
                             parent.Right = parentBeam;
                     }
-                    
+
                     var l = Node.Create(x - 1, y, parentBeam);
                     var r = Node.Create(x + 1, y, parentBeam);
                     parentBeam.Left = l;
                     parentBeam.Right = r;
-                    
+
                     if (xpoints.TryGetValue(x - 1, out var nodeAboveLeft))
                         nodeAboveLeft.Add(l);
                     else
@@ -193,12 +118,84 @@ public class Teleporter
         }
 
 
-
         return root.PathCount;
     }
-    
-    
-    private bool IsStart(Point point) => _schema[point.Y][point.X] == Start;
-    private bool IsBeam(Point point) => IsValidPoint(point) && (_schema[point.Y][point.X] == Beam ||  IsStart(point)); 
-}
 
+    private bool IsBeam(Point point) => IsValidPoint(point) && (_schema[point.Y][point.X] == Beam || IsStart(point));
+    private bool IsEmptySpace(Point point) => IsValidPoint(point) && _schema[point.Y][point.X] == EmptySpace;
+
+    private bool IsSplitter(Point point) => IsValidPoint(point) && _schema[point.Y][point.X] == Splitter;
+
+
+    private bool IsStart(Point point) => _schema[point.Y][point.X] == Start;
+
+    private bool IsValidPoint(Point point)
+    {
+        if (point.Y < 0 || point.Y >= _schema.Length)
+            return false;
+        if (point.X < 0 || point.X >= _schema[point.Y].Length)
+            return false;
+        return true;
+    }
+
+    private int MoveTachyon(Point point)
+    {
+        var beamCount = 0;
+
+        if (!IsBeam(point))
+            return beamCount;
+
+        var current = point;
+
+        while (true)
+        {
+            current = Coordinates.GetMapPoint(current, Coordinates.Direction.Down);
+            if (!IsEmptySpace(current))
+                break;
+
+
+            SetMapChar(current, Beam);
+        }
+
+        if (IsSplitter(current))
+        {
+            var left = Coordinates.GetMapPoint(current, Coordinates.Direction.Left);
+            var right = Coordinates.GetMapPoint(current, Coordinates.Direction.Right);
+            var above = Coordinates.GetMapPoint(current, Coordinates.Direction.Up);
+            if (IsEmptySpace(left))
+            {
+                SetMapChar(left, Beam);
+                Beams.Enqueue(left);
+            }
+
+            if (IsEmptySpace(right))
+            {
+                SetMapChar(right, Beam);
+                Beams.Enqueue(right);
+            }
+
+            if (IsBeam(above))
+                beamCount++;
+        }
+
+        return beamCount;
+    }
+
+    private void Reset()
+    {
+        _schema = File.ReadAllLines(_path).Select(x => x.ToArray()).ToArray();
+        var startPoints = new List<Point>();
+        for (var y = 0; y < _schema.Length; y++)
+        for (var x = 0; x < _schema[y].Length; x++)
+        {
+            if (_schema[y][x] == Start)
+            {
+                startPoints.Add(new Point(x, y));
+            }
+        }
+
+        TachyonStart = startPoints.ToArray();
+    }
+
+    private void SetMapChar(Point point, char c) => _schema[point.Y][point.X] = c;
+}

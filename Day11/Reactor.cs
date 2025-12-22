@@ -4,29 +4,32 @@ namespace Day11;
 
 public class Reactor
 {
-    
-    private Reactor(){}
-
     private readonly Dictionary<string, long> _cache = [];
-        
+
+    private Reactor()
+    {
+    }
+
+    public Dictionary<string, string[]> Devices { get; } = [];
+
 
     public long CountAllPathsFrom(string from, string to)
     {
         _cache.Clear();
         return CountAllPathsFromHelper(from, to);
     }
+
     private long CountAllPathsFromHelper(string from, string to)
     {
         if (_cache.TryGetValue($"{from}:{to}", out var cache))
             return cache;
-        
+
         var numberOfPaths = 0L;
         var queue = new Queue<string>(Devices[from]);
         var visited = new HashSet<string>();
         var visitedCount = new Dictionary<string, long>();
         while (queue.TryDequeue(out var device))
         {
-
             if (!to.Equals("out", StringComparison.InvariantCultureIgnoreCase) && device.Equals("out", StringComparison.InvariantCultureIgnoreCase))
                 continue;
 
@@ -37,7 +40,7 @@ public class Reactor
                 numberOfPaths++;
                 continue;
             }
-            
+
             if (!visited.Add(device))
             {
                 if (visitedCount.TryGetValue(device, out _))
@@ -46,7 +49,7 @@ public class Reactor
                     visitedCount.Add(device, 1);
                 continue;
             }
-            
+
             foreach (var name in devices)
                 queue.Enqueue(name);
         }
@@ -57,35 +60,26 @@ public class Reactor
             {
                 if (count > 0)
                 {
-                    numberOfPaths += (CountAllPathsFromHelper(dev, to) *  count);
+                    numberOfPaths += (CountAllPathsFromHelper(dev, to) * count);
                 }
             }
         }
-        
-        _cache.Add($"{from}:{to}",  numberOfPaths);
-        
+
+        _cache.Add($"{from}:{to}", numberOfPaths);
+
         return numberOfPaths;
     }
-    
+
     public static Reactor Create(string[] data)
     {
         var reactor = new Reactor();
         foreach (var line in data)
         {
             var deviceName = line.Substring(0, line.IndexOf(':'));
-            var outputs = line.Substring(line.IndexOf(':') + 1).Split(' ',  StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var outputs = line.Substring(line.IndexOf(':') + 1).Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             reactor.Devices.Add(deviceName, outputs);
         }
-        
+
         return reactor;
     }
-
-    public Dictionary<string, string[]> Devices { get; } = [];
-    
-    
-    
-
-
 }
-
-

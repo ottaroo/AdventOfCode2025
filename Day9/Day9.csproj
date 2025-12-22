@@ -8,22 +8,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Update="Program.cs">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </Compile>
+        <Compile Update="Program.cs">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="PuzzleData.txt">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="TestData.txt">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <None Update="PuzzleData.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestData.txt">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="System.Drawing.Common" Version="10.0.1" />
+        <PackageReference Include="System.Drawing.Common" Version="10.0.1"/>
     </ItemGroup>
 
 </Project>
